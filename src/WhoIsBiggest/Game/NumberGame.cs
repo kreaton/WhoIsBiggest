@@ -1,4 +1,4 @@
-namespace WhoIsLargest.Game;
+namespace WhoIsBiggest.Game;
 
 /// <param name="MaxGap">How far apart the two numbers may be, or null for no limit.</param>
 public sealed record GameLevel(int Number, string Name, int Max, int? MaxGap)
@@ -24,7 +24,7 @@ public sealed class NumberGame
 
     public int Right { get; private set; }
 
-    public int Largest => Math.Max(Left, Right);
+    public int Biggest => Math.Max(Left, Right);
 
     public void SetLevel(GameLevel level) => Level = level;
 
@@ -50,5 +50,5 @@ public sealed class NumberGame
         (Left, Right) = (first, second);
     }
 
-    public bool IsCorrect(int pick) => pick == Largest;
+    public bool IsCorrect(int pick) => pick == Biggest;
 }

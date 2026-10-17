@@ -1,12 +1,12 @@
 @page "/"
-@using WhoIsLargest.Game
+@using WhoIsBiggest.Game
 @inject IJSRuntime JS
 
-<PageTitle>Who Is Largest?</PageTitle>
+<PageTitle>Who Is Biggest?</PageTitle>
 
 <main class="game">
     <header class="title">
-        <h1>Who Is Largest?</h1>
+        <h1>Who Is Biggest?</h1>
         <div class="title-buttons">
             <button class="sound-btn" @onclick="ToggleSound"
                     aria-label="@(_soundOn ? "Turn sound off" : "Turn sound on")">
@@ -51,7 +51,7 @@
             {
                 <div class="message success">
                     <span class="big-emoji">🎉</span>
-                    <span>Yes! @_game.Largest is biggest!</span>
+                    <span>Yes! @_game.Biggest is biggest!</span>
                 </div>
                 <button class="next-btn" @onclick="NextRound">Next ➜</button>
             }

@@ -1,6 +1,6 @@
 {
-  "name": "Who Is Largest?",
-  "short_name": "Largest?",
+  "name": "Who Is Biggest?",
+  "short_name": "Biggest?",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
