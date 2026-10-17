@@ -99,13 +99,6 @@ button:disabled { cursor: default; }
             "levels play";
         column-gap: 1.5rem;
     }
-
-    .levels {
-        grid-template-columns: 1fr;
-        align-content: center;
-    }
-
-    .level-btn { padding: 0.9rem 0.4rem; }
 }
 
 .title {
@@ -179,6 +172,15 @@ button:disabled { cursor: default; }
 .level-3.active { background: var(--pink); }
 .level-4.active { background: var(--purple); }
 
+@media (min-aspect-ratio: 4/3) {
+    .levels {
+        grid-template-columns: 1fr;
+        align-content: center;
+    }
+
+    .level-btn { padding: 0.9rem 0.4rem; }
+}
+
 /* ---------- Question & number cards ---------- */
 
 .play {
@@ -201,6 +203,7 @@ button:disabled { cursor: default; }
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     padding: 0 0.5rem;
+    margin-top: 1.2rem; /* room for the crown */
 }
 
 .card {
@@ -213,6 +216,14 @@ button:disabled { cursor: default; }
     place-items: center;
     transition: transform .1s, box-shadow .1s, background .2s, color .2s, opacity .2s;
     animation: deal .4s ease-out backwards;
+}
+
+/* Tall phones: let the cards grow into the spare height (the rest of the page is about 28rem). */
+@media (max-aspect-ratio: 4/3) {
+    .card {
+        height: clamp(17rem, 100vh - 28rem, 28rem);
+        height: clamp(17rem, 100dvh - 28rem, 28rem);
+    }
 }
 
 .card:nth-child(1) { color: var(--red); }
@@ -250,8 +261,10 @@ button:disabled { cursor: default; }
 
 .crown {
     position: absolute;
-    top: -2.6rem;
-    font-size: 4rem;
+    top: -2.4rem;
+    left: 50%;
+    translate: -50% 0;
+    font-size: 3.6rem;
     line-height: 1;
     animation: crown-drop .5s ease-out;
 }
