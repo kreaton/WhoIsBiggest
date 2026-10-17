@@ -1,0 +1,136 @@
+@page "/"
+@using WhoIsLargest.Game
+@inject IJSRuntime JS
+
+<PageTitle>Who Is Largest?</PageTitle>
+
+<main class="game">
+    <header class="title">
+        <h1>Who Is Largest?</h1>
+        <div class="title-buttons">
+            <button class="sound-btn" @onclick="ToggleSound"
+                    aria-label="@(_soundOn ? "Turn sound off" : "Turn sound on")">
+                @(_soundOn ? "🔊" : "🔇")
+            </button>
+            <div class="stars" aria-label="@_stars stars">⭐ @_stars</div>
+        </div>
+    </header>
+
+    <nav class="levels" aria-label="Choose level">
+        @foreach (var level in NumberGame.Levels)
+        {
+            <button class="level-btn level-@level.Number @(level == _game.Level ? "active" : "")"
+                    @onclick="() => ChangeLevel(level)">
+                @level.Name
+                <small>@level.Description</small>
+            </button>
+        }
+    </nav>
+
+    <div class="play">
+        <p class="question">Tap the <strong>biggest</strong> number!</p>
+
+        <section class="cards" @key="_round">
+            @foreach (var number in new[] { _game.Left, _game.Right })
+            {
+                var state = _solved && _game.IsCorrect(number) ? "correct"
+                    : _wrongPick == number ? "wrong" : "";
+                <button class="card @state" @onclick="() => Pick(number)"
+                        disabled="@(_solved || _wrongPick == number)">
+                    @if (state == "correct")
+                    {
+                        <span class="crown" aria-hidden="true">👑</span>
+                    }
+                    <span class="number @(number >= 10 ? "two-digits" : "")">@number</span>
+                </button>
+            }
+        </section>
+
+        <section class="feedback" aria-live="polite">
+            @if (_solved)
+            {
+                <div class="message success">
+                    <span class="big-emoji">🎉</span>
+                    <span>Yes! @_game.Largest is biggest!</span>
+                </div>
+                <button class="next-btn" @onclick="NextRound">Next ➜</button>
+            }
+            else if (_wrongPick is not null)
+            {
+                <div class="message try-again" @key="_wrongCount">
+                    <span class="big-emoji">🤔</span>
+                    <span>Oops! Try again!</span>
+                </div>
+            }
+        </section>
+    </div>
+
+    @if (_solved)
+    {
+        <div class="confetti" aria-hidden="true">
+            @for (var i = 0; i < 24; i++)
+            {
+                <span style="--i:@i"></span>
+            }
+        </div>
+    }
+</main>
+
+@code {
+    private readonly NumberGame _game = new();
+    private bool _solved;
+    private int? _wrongPick;
+    private int _wrongCount;
+    private int _round;
+    private int _stars;
+    private bool _soundOn = true;
+
+    protected override void OnInitialized() => NextRound();
+
+    private void ChangeLevel(GameLevel level)
+    {
+        if (level == _game.Level) return;
+        _game.SetLevel(level);
+        NextRound();
+    }
+
+    private void NextRound()
+    {
+        _game.NewRound();
+        _solved = false;
+        _wrongPick = null;
+        _round++;
+    }
+
+    private async Task Pick(int number)
+    {
+        if (_game.IsCorrect(number))
+        {
+            _solved = true;
+            _wrongPick = null;
+            _stars++;
+            await Play("success");
+        }
+        else
+        {
+            _wrongPick = number;
+            _wrongCount++;
+            await Play("tryAgain");
+        }
+    }
+
+    private void ToggleSound() => _soundOn = !_soundOn;
+
+    private async Task Play(string sound)
+    {
+        if (!_soundOn) return;
+        try
+        {
+            await JS.InvokeVoidAsync($"gameSounds.{sound}");
+        }
+        catch (JSException)
+        {
+            // No audio support: the game still works without sound.
+        }
+    }
+}
