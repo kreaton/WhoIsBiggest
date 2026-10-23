@@ -350,31 +350,6 @@ button:disabled { cursor: default; }
     95% { rotate: -2deg; }
 }
 
-/* ---------- Confetti ---------- */
-
-.confetti {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.confetti span {
-    position: absolute;
-    top: -1.25rem;
-    left: calc(var(--i) * 4.2%);
-    width: 0.75rem;
-    height: 1.1rem;
-    border-radius: 0.2rem;
-    background: hsl(calc(var(--i) * 47deg) 90% 60%);
-    animation: fall calc(1.6s + (var(--i) * 0.07s)) ease-in forwards;
-    animation-delay: calc(var(--i) * 0.03s);
-}
-
-@keyframes fall {
-    to { transform: translateY(110vh) rotate(calc(var(--i) * 90deg + 360deg)); }
-}
-
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; }
 }
