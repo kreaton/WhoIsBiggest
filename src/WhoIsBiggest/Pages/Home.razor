@@ -2,21 +2,21 @@
 @using WhoIsBiggest.Game
 @inject IJSRuntime JS
 
-<PageTitle>Who Is Biggest?</PageTitle>
+<PageTitle>Hvem er størst?</PageTitle>
 
 <main class="game">
     <header class="title">
-        <h1>Who Is Biggest?</h1>
+        <h1>Hvem er størst?</h1>
         <div class="title-buttons">
             <button class="sound-btn" @onclick="ToggleSound"
-                    aria-label="@(_soundOn ? "Turn sound off" : "Turn sound on")">
+                    aria-label="@(_soundOn ? "Slå lyden fra" : "Slå lyden til")">
                 @(_soundOn ? "🔊" : "🔇")
             </button>
-            <div class="stars" aria-label="@_stars stars">⭐ @_stars</div>
+            <div class="stars" aria-label="@_stars stjerner">⭐ @_stars</div>
         </div>
     </header>
 
-    <nav class="levels" aria-label="Choose level">
+    <nav class="levels" aria-label="Vælg niveau">
         @foreach (var level in NumberGame.Levels)
         {
             <button class="level-btn level-@level.Number @(level == _game.Level ? "active" : "")"
@@ -28,7 +28,7 @@
     </nav>
 
     <div class="play">
-        <p class="question">Tap the <strong>biggest</strong> number!</p>
+        <p class="question">Tryk på det <strong>største</strong> tal!</p>
 
         <section class="cards" @key="_round">
             @foreach (var number in new[] { _game.Left, _game.Right })
@@ -51,19 +51,21 @@
             {
                 <div class="message success">
                     <span class="big-emoji">🎉</span>
-                    <span>Yes! @_game.Biggest is biggest!</span>
+                    <span>Ja! @_game.Biggest er størst!</span>
                 </div>
-                <button class="next-btn" @onclick="NextRound">Next ➜</button>
+                <button class="next-btn" @onclick="NextRound">Næste ➜</button>
             }
             else if (_wrongPick is not null)
             {
                 <div class="message try-again" @key="_wrongCount">
                     <span class="big-emoji">🤔</span>
-                    <span>Oops! Try again!</span>
+                    <span>Ups! Prøv igen!</span>
                 </div>
             }
         </section>
     </div>
+
+    <footer class="credits">Lavet med kærlighed 💛 (c) 2026 Per Hejndorf, Kreaton – @BuildInfo.Display</footer>
 </main>
 
 @code {

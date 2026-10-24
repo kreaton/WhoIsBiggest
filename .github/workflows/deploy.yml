@@ -18,7 +18,8 @@ jobs:
           dotnet-version: 10.0.x # The project targets net10.0
 
       - name: Publish .NET App
-        run: dotnet publish src/WhoIsBiggest/WhoIsBiggest.csproj -c Release -o release
+        # The run number becomes the patch version (1.0.<run>), see Directory.Build.props
+        run: dotnet publish src/WhoIsBiggest/WhoIsBiggest.csproj -c Release -o release -p:BuildNumber=${{ github.run_number }}
 
       - name: Upload publish artifact
         uses: actions/upload-artifact@v4

@@ -1,6 +1,6 @@
 # Who Is Biggest?
 
-A tiny number game for young kids. Two numbers appear on big cards and the child taps the **biggest** one. A right answer earns a star, a crown and a fanfare; a wrong answer gets a friendly "Oops! Try again!" and a sad-trombone sound, and the wrong card is greyed out so they can try the other one.
+A tiny number game for young kids. Two numbers appear on big cards and the child taps the **biggest** one. A right answer earns a star, a crown and a fanfare; a wrong answer gets a friendly "Ups! Prøv igen!" (oops, try again) and a sad-trombone sound, and the wrong card is greyed out so they can try the other one.
 
 It is a Blazor WebAssembly app (.NET 10) that runs entirely in the browser, with no server or backend. It can be pinned to the home screen on phones and tablets and then runs full screen like an app.
 
@@ -36,7 +36,6 @@ src/WhoIsBiggest/
     js/sounds.js            Fanfare and try-again sounds
     manifest.webmanifest
     icons/                  App icons and favicon
-  Publish.bat               Release publish to bin/Publish
 ```
 
 ## Running locally
@@ -51,7 +50,7 @@ Then open http://localhost:5148 (or https://localhost:7290 with the `https` laun
 
 ## Publishing
 
-Run `src/WhoIsBiggest/Publish.bat`, or:
+Publish with:
 
 ```bash
 dotnet publish src/WhoIsBiggest -c Release -o src/WhoIsBiggest/bin/Publish

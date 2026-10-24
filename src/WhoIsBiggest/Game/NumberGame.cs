@@ -3,17 +3,17 @@ namespace WhoIsBiggest.Game;
 /// <param name="MaxGap">How far apart the two numbers may be, or null for no limit.</param>
 public sealed record GameLevel(int Number, string Name, int Max, int? MaxGap)
 {
-    public string Description => MaxGap is null ? $"1 – {Max}" : $"1 – {Max}, close";
+    public string Description => MaxGap is null ? $"1 – {Max}" : $"1 – {Max}, tæt på";
 }
 
 public sealed class NumberGame
 {
     public static readonly IReadOnlyList<GameLevel> Levels =
     [
-        new(1, "Level 1", 12, null),
-        new(2, "Level 2", 30, 10),
-        new(3, "Level 3", 99, 10),
-        new(4, "Level 4", 99, null),
+        new(1, "Niveau 1", 12, null),
+        new(2, "Niveau 2", 30, 10),
+        new(3, "Niveau 3", 99, 10),
+        new(4, "Niveau 4", 99, null),
     ];
 
     private readonly Random _random = new();

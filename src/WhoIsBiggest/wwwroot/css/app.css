@@ -81,7 +81,8 @@ button:disabled { cursor: default; }
     grid-template-areas:
         "title"
         "levels"
-        "play";
+        "play"
+        "credits";
     align-content: center;
     gap: 1rem;
 }
@@ -89,6 +90,7 @@ button:disabled { cursor: default; }
 .title  { grid-area: title; }
 .levels { grid-area: levels; }
 .play   { grid-area: play; }
+.credits { grid-area: credits; }
 
 @media (min-aspect-ratio: 4/3) {
     .game {
@@ -96,7 +98,8 @@ button:disabled { cursor: default; }
         grid-template-columns: 13rem 1fr;
         grid-template-areas:
             "title title"
-            "levels play";
+            "levels play"
+            "credits credits";
         column-gap: 1.5rem;
     }
 }
@@ -337,6 +340,14 @@ button:disabled { cursor: default; }
 
 .next-btn:active { transform: translateY(0.25rem); box-shadow: 0 0.1rem 0 #5f3dc4; }
 
+/* ---------- Credits ---------- */
+
+.credits {
+    text-align: center;
+    font-size: 0.75rem;
+    opacity: .6;
+}
+
 @keyframes bounce-in {
     0%   { transform: scale(.3); opacity: 0; }
     60%  { transform: scale(1.1); opacity: 1; }
@@ -384,7 +395,7 @@ button:disabled { cursor: default; }
 }
 
     .blazor-error-boundary::after {
-        content: "An error has occurred."
+        content: "Der opstod en fejl."
     }
 
 .loading-progress {
@@ -418,5 +429,5 @@ button:disabled { cursor: default; }
 }
 
     .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
+        content: var(--blazor-load-percentage-text, "Indlæser");
     }
