@@ -1,4 +1,4 @@
-name: Build and Deploy Blazor WASM to FTP
+name: Build and Deploy to FTP and GitHub Pages
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
           name: publish-output
           path: release
 
-  deploy:
+  deploy-ftp:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -37,13 +37,13 @@ jobs:
           name: publish-output
           path: release
 
-      # Uploads the publish output (web.config + wwwroot/), the same files the Visual Studio
-      # FTP profile uploads. Only changed files are sent after the first run.
+      # Uploads the publish output (wwwroot/) to its folder under KidsGames on FTP.
+      # Only changed files are sent after the first run.
       # Repository secrets (Settings > Secrets and variables > Actions):
       #   FTP_HOST      e.g. ftp.example.com
       #   FTP_USERNAME
       #   FTP_PASSWORD
-      #   FTP_FOLDER    e.g. webroots/www/test  (no trailing slash)
+      #   FTP_FOLDER    webroots/www/kidsgames/whoisbiggest  (no trailing slash)
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -53,38 +53,45 @@ jobs:
           server-dir: ${{ secrets.FTP_FOLDER }}/
           local-dir: ./release/wwwroot/
 
-      # ---- GitHub Pages deployment (disabled) ----
+  deploy-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GAME_DIR: whoisbiggest
+    steps:
+      - name: Download publish artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: publish-output
+          path: release
 
-      # # GitHub Pages ignores folders starting with an underscore (like _framework) unless .nojekyll is present
-      # - name: Add .nojekyll file
-      #   run: touch release/wwwroot/.nojekyll
-
-      # # Essential for client-side routing so refreshing a subpage doesn't throw a 404 error
-      # - name: Copy index.html to 404.html
-      #   run: cp release/wwwroot/index.html release/wwwroot/404.html
-
-      # # Automatically fix the base href for GitHub subdirectories (e.g., username.github.io/repo-name/)
-      # - name: Fix base href
-      #   run: |
-      #     TAG="<base href=\"/\" />"
-      #     REPLACE="<base href=\"/${{ github.event.repository.name }}/\" />"
-      #     find release/wwwroot -name "index.html" -type f -exec sed -i "s|$TAG|$REPLACE|g" {} +
-
-      # - name: Upload artifact for GitHub Pages
-      #   uses: actions/upload-pages-artifact@v3
-      #   with:
-      #     path: release/wwwroot
-
-  # deploy:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     pages: write
-  #     id-token: write
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.url }}
-  #   steps:
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v4
+      # Pushes the game into the whoisbiggest/ folder of the gh-pages branch of kreaton/KidsGames,
+      # served at https://kreaton.github.io/KidsGames/whoisbiggest/. The relative base href works there as-is.
+      # Repository secret PAGES_DEPLOY_KEY: private SSH key of a deploy key (write access) on KidsGames.
+      - name: Deploy to KidsGames GitHub Pages
+        env:
+          DEPLOY_KEY: ${{ secrets.PAGES_DEPLOY_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
+          git clone --depth 1 --branch gh-pages git@github.com:kreaton/KidsGames.git site
+          cd site
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Several games can deploy at once, so retry on a rejected push.
+          for attempt in 1 2 3 4 5; do
+            rm -rf "$GAME_DIR"
+            cp -r ../release/wwwroot "$GAME_DIR"
+            # Pages can't serve the precompressed copies, so leave them out
+            find "$GAME_DIR" -type f \( -name '*.br' -o -name '*.gz' \) -delete
+            git add -A "$GAME_DIR"
+            if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+            git commit -q -m "Deploy $GAME_DIR from ${{ github.repository }}@${GITHUB_SHA::7}"
+            if git push origin gh-pages; then exit 0; fi
+            sleep $((attempt * 5))
+            git fetch --depth 1 origin gh-pages
+            git reset -q --hard FETCH_HEAD
+          done
+          exit 1
