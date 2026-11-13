@@ -1,4 +1,4 @@
-name: Build and Deploy to FTP and GitHub Pages
+name: Build and Deploy to GitHub Pages
 
 on:
   push:
@@ -26,32 +26,6 @@ jobs:
         with:
           name: publish-output
           path: release
-
-  deploy-ftp:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download publish artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: publish-output
-          path: release
-
-      # Uploads the publish output (wwwroot/) to its folder under KidsGames on FTP.
-      # Only changed files are sent after the first run.
-      # Repository secrets (Settings > Secrets and variables > Actions):
-      #   FTP_HOST      e.g. ftp.example.com
-      #   FTP_USERNAME
-      #   FTP_PASSWORD
-      #   FTP_FOLDER    webroots/www/kidsgames/whoisbiggest  (no trailing slash)
-      - name: Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_FOLDER }}/
-          local-dir: ./release/wwwroot/
 
   deploy-pages:
     needs: build
