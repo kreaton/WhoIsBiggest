@@ -12,6 +12,8 @@
 
 **A tiny number game for young kids.**
 
+▶️ **Play it:** <https://kreaton.github.io/KidsGames/whoisbiggest/>
+
 Two numbers appear on big cards and the child taps the **biggest** one. A right answer earns a star, a crown and a fanfare; a wrong answer gets a friendly "Ups! Prøv igen!" (oops, try again) and a sad-trombone sound, and the wrong card is greyed out so they can try the other one.
 
 It is a Blazor WebAssembly app (.NET 10) that runs entirely in the browser, with no server or backend. It can be pinned to the home screen on phones and tablets and then runs full screen like an app.

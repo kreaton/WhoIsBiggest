@@ -8,6 +8,10 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    ignore:
+      # The games target .NET 10. A new major version (11) needs a new target framework, so it is upgraded by hand.
+      - dependency-name: "Microsoft.AspNetCore.*"
+        update-types: ["version-update:semver-major"]
     groups:
       nuget-minor-and-patch:
         update-types: ["minor", "patch"]
